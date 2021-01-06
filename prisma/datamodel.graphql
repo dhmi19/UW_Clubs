@@ -1,0 +1,28 @@
+type User {
+    id: ID! @id
+    name: String!
+    email: String! @unique
+    password: String!
+    term: String!
+    program: String!
+    clubs: [Club]! @relation(name: "UserToClubs", onDelete: CASCADE)
+    comments: [Comment!]! @relation(name: "UserToComments", onDelete: CASCADE)
+}
+
+type Club {
+    id: ID! @id
+    name: String!
+    rating: Int!
+    description: String!
+    numMembers: Int!
+    founder: User! @relation(name: "UserToClubs", onDelete: SET_NULL)
+    comments: [Comment!]! @relation(name: "ClubToComments", onDelete: CASCADE)
+}
+
+type Comment {
+    id: ID! @id
+    rating: Int!
+    text: String!
+    author: User! @relation(name: "UserToComments", onDelete: SET_NULL)
+    club: Club! @relation(name: "ClubToComments", onDelete: SET_NULL)
+}
