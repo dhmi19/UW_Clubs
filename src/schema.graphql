@@ -1,10 +1,11 @@
-# import UserOrderByInput, PostOrderByInput, CommentOrderByInput from './generated/prisma.graphql'
+# import UserOrderByInput,ClubOrderByInput, CommentOrderByInput from './generated/prisma.graphql'
 
 type Query {
     users(query: String, first: Int, skip: Int, after: String, orderBy: UserOrderByInput): [User!]!
     comments(first: Int, skip: Int, after: String, orderBy: CommentOrderByInput): [Comment!]!
+    clubs(first: Int, skip: Int, after: String, orderBy: CommentOrderByInput): [Club!]!
     me: User!
-    post(id: ID!): Post!
+    club(id: ID!): Club!
 }
 
 type Mutation {
@@ -12,18 +13,16 @@ type Mutation {
     login(data: LoginUserInput!): AuthPayload!
     deleteUser: User!
     updateUser(data: UpdateUserInput!): User!
-    createPost(data: CreatePostInput!): Post!
-    deletePost(id: ID!): Post!
-    updatePost(id: ID!, data: UpdatePostInput!): Post!
+    createClub(data: ClubCreateInput!): Club!
+    deleteClub(id: ID!): Club!
+    updateClub(id: ID!, data: ClubUpdateInput!): Club!
     createComment(data: CreateCommentInput!): Comment!
     deleteComment(id: ID!): Comment!
     updateComment(id: ID!, data: UpdateCommentInput!): Comment!
 }
 
 type Subscription {
-    comment(postId: ID!): CommentSubscriptionPayload!
-    post: PostSubscriptionPayload!
-    myPost: PostSubscriptionPayload!
+    club(clubID: ID!): ClubSubscriptionPayload!
 }
 
 type AuthPayload {
@@ -48,21 +47,28 @@ input UpdateUserInput {
     password: String
 }
 
-input CreatePostInput {
-    title: String!
-    body: String!
-    published: Boolean!
+input ClubCreateInput {
+  id: ID
+  name: String!
+  rating: Int!
+  description: String!
+  numMembers: Int!
+  founder: UserCreateOneWithoutClubsInput!
+  comments: CommentCreateManyWithoutClubInput
 }
 
-input UpdatePostInput {
-    title: String
-    body: String
-    published: Boolean
+input ClubUpdateInput {
+  name: String
+  rating: Int
+  description: String
+  numMembers: Int
+  founder: UserUpdateOneRequiredWithoutClubsInput
+  comments: CommentUpdateManyWithoutClubInput
 }
 
 input CreateCommentInput {
     text: String!
-    post: ID!
+    club: ID! #TODO: Check this
 }
 
 input UpdateCommentInput {
@@ -74,28 +80,27 @@ type User {
     name: String!
     email: String
     password: String!
-    posts: [Post!]!
+    clubs: [Club!]!
     comments: [Comment!]!
     updatedAt: String!
     createdAt: String!
 }
 
-type Post {
-    id: ID!
-    title: String!
-    body: String!
-    published: Boolean!
-    author: User!
+type Club {
+    id: ID! @id
+    name: String!
+    rating: Int!
+    description: String!
+    numMembers: Int!
+    founder: User! 
     comments: [Comment!]!
-    updatedAt: String!
-    createdAt: String!
 }
 
 type Comment {
     id: ID!
     text: String!
     author: User!
-    post: Post!
+    club: Club!
     updatedAt: String!
     createdAt: String!
 }
@@ -106,9 +111,9 @@ enum MutationType {
     DELETED
 }
 
-type PostSubscriptionPayload {
+type ClubSubscriptionPayload {
     mutation: MutationType!
-    node: Post
+    node: Club
 }
 
 type CommentSubscriptionPayload {
