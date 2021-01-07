@@ -34,6 +34,8 @@ input CreateUserInput {
     name: String!
     email: String!
     password: String!
+    term: String!
+    program: String!
 }
 
 input LoginUserInput {
@@ -50,29 +52,25 @@ input UpdateUserInput {
 input ClubCreateInput {
   id: ID
   name: String!
-  rating: Int!
   description: String!
   numMembers: Int!
-  founder: UserCreateOneWithoutClubsInput!
-  comments: CommentCreateManyWithoutClubInput
 }
 
 input ClubUpdateInput {
   name: String
-  rating: Int
   description: String
   numMembers: Int
-  founder: UserUpdateOneRequiredWithoutClubsInput
-  comments: CommentUpdateManyWithoutClubInput
 }
 
 input CreateCommentInput {
     text: String!
-    club: ID! #TODO: Check this
+    club: ID! 
+    rating: Int!
 }
 
 input UpdateCommentInput {
     text: String
+    rating: Int
 }
 
 type User {
@@ -87,7 +85,7 @@ type User {
 }
 
 type Club {
-    id: ID! @id
+    id: ID!
     name: String!
     rating: Int!
     description: String!
