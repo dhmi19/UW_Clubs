@@ -40,7 +40,7 @@ const Query = {
             after: args.after,
             orderBy: args.orderBy
         };
-
+        //console.log("hello");
         return prisma.query.clubs(opArgs, info);
     },
 
